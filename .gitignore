@@ -32,6 +32,10 @@ Release/
 !DSP/lib/fftw3/libfftw3f-3.dll
 !DSP/lib/fftw3/libfftw3f-3.lib
 
+## Installer output
+installer-output/
+publish/
+
 ## NuGet
 packages/
 

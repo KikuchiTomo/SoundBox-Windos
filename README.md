@@ -2,6 +2,13 @@
 
 Node-based virtual audio processor for Windows.
 
+> [!IMPORTANT]
+> **Windows SmartScreen Warning / Windows SmartScreen の警告について**
+>
+> When you run SoundBox for the first time, Windows may display a "Windows protected your PC" warning. This is because the application is not code-signed due to the cost of obtaining a certificate, **not** because it contains malware. To proceed, click **"More info"** and then **"Run anyway"**.
+>
+> SoundBoxを初めて実行すると「WindowsによってPCが保護されました」という警告が表示されることがあります。これはコード署名の証明書取得に費用がかかるため署名を行っていないことが原因であり、マルウェアが含まれているわけではありません。**「詳細情報」** をクリックし、**「実行」** を選択してください。
+
 SoundBox is a voice changer app that you can start using right after installation.
 By freely connecting effects composed of nodes, you can create sounds with complete freedom.
 
