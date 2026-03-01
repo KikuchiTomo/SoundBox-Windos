@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NAudio" Version="2.2.1" />
+  </ItemGroup>
+
+  <!-- Include driver INF in build output -->
+  <ItemGroup>
+    <None Include="Driver\SoundBoxVAD.inf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>Driver\SoundBoxVAD.inf</Link>
+    </None>
+  </ItemGroup>
+
+  <!-- Copy native DLLs from DSP build output if they exist -->
+  <Target Name="CopyNativeDSP" AfterTargets="Build">
+    <ItemGroup>
+      <!-- Check both possible output locations -->
+      <DspDlls Include="$(SolutionDir)DSP\x64\$(Configuration)\SoundBoxDSP.dll" Condition="Exists('$(SolutionDir)DSP\x64\$(Configuration)\SoundBoxDSP.dll')" />
+      <DspDlls Include="$(SolutionDir)x64\$(Configuration)\SoundBoxDSP.dll" Condition="Exists('$(SolutionDir)x64\$(Configuration)\SoundBoxDSP.dll') AND !Exists('$(SolutionDir)DSP\x64\$(Configuration)\SoundBoxDSP.dll')" />
+      <!-- FFTW3 DLL from lib folder -->
+      <DspDlls Include="$(SolutionDir)DSP\lib\fftw3\libfftw3f-3.dll" Condition="Exists('$(SolutionDir)DSP\lib\fftw3\libfftw3f-3.dll')" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DspDlls)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" Condition="'@(DspDlls)' != ''" />
+  </Target>
+
+</Project>

@@ -1,0 +1,66 @@
+;
+; SoundBox Virtual Audio Device (VAD)
+; INF file for installing the virtual microphone driver
+;
+
+[Version]
+Signature   = "$Windows NT$"
+Class       = MEDIA
+ClassGuid   = {4d36e96c-e325-11ce-bfc1-08002be10318}
+Provider    = %ProviderName%
+DriverVer   = 03/01/2026,1.0.0.0
+CatalogFile = SoundBoxVAD.cat
+
+[SourceDisksNames]
+1 = %DiskName%
+
+[SourceDisksFiles]
+SoundBoxVAD.sys = 1
+
+[DestinationDirs]
+DefaultDestDir = 12  ; %SystemRoot%\System32\Drivers
+
+[Manufacturer]
+%MfgName% = SoundBox, NTamd64
+
+[SoundBox.NTamd64]
+%DeviceName% = SoundBoxVAD_Install, Root\SoundBoxVAD
+
+; ---- Install Section ----
+
+[SoundBoxVAD_Install]
+CopyFiles = SoundBoxVAD_CopyFiles
+AddReg    = SoundBoxVAD_AddReg
+
+[SoundBoxVAD_CopyFiles]
+SoundBoxVAD.sys
+
+[SoundBoxVAD_AddReg]
+HKR,,AssociatedFilters,,"wdmaud,swmidi,redbook"
+HKR,,Driver,,SoundBoxVAD.sys
+HKR,,NTMPDriver,,"SoundBoxVAD.sys,sbemul.sys"
+
+HKR,Drivers,SubClasses,,"wave"
+HKR,Drivers\wave\wdmaud.drv,Driver,,wdmaud.drv
+HKR,Drivers\wave\wdmaud.drv,Description,,%DeviceName%
+
+; ---- Service Section ----
+
+[SoundBoxVAD_Install.Services]
+AddService = SoundBoxVAD, 0x00000002, SoundBoxVAD_Service
+
+[SoundBoxVAD_Service]
+DisplayName   = %ServiceName%
+ServiceType   = 1                  ; SERVICE_KERNEL_DRIVER
+StartType     = 3                  ; SERVICE_DEMAND_START
+ErrorControl  = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary = %12%\SoundBoxVAD.sys
+
+; ---- Strings ----
+
+[Strings]
+ProviderName = "SoundBox"
+MfgName      = "SoundBox"
+DeviceName   = "SoundBox Virtual Microphone"
+ServiceName  = "SoundBox Virtual Audio Device"
+DiskName     = "SoundBox Driver Disk"

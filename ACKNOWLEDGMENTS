@@ -1,0 +1,29 @@
+SoundBox - Acknowledgments
+==========================
+
+This project would not be possible without the following open-source projects
+and their contributors:
+
+FFTW3 - Fastest Fourier Transform in the West
+  Authors: Matteo Frigo and Steven G. Johnson
+  Affiliation: Massachusetts Institute of Technology
+  The auto-tune pitch correction feature is powered by FFTW3's high-performance
+  FFT implementation. We gratefully acknowledge the exceptional work of the FFTW
+  team in creating the fastest and most widely-used FFT library.
+  https://www.fftw.org/
+  License: GPL v2+
+
+NAudio - .NET Audio Library
+  Author: Mark Heath
+  NAudio provides the audio capture and playback infrastructure that forms the
+  backbone of SoundBox's audio pipeline.
+  https://github.com/naudio/NAudio
+  License: MIT
+
+Microsoft Windows Driver Kit (WDK)
+  The virtual audio device driver is built using Microsoft's PortCls framework
+  and WDK toolchain.
+
+We also thank the open-source audio processing community for the wealth of
+knowledge on digital signal processing, phase vocoder techniques, and pitch
+detection algorithms that informed this implementation.

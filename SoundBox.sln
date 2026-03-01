@@ -1,0 +1,65 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
+MinimumVisualStudioVersion = 10.0.40219.1
+
+# C# WinForms App (main UI)
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundBox", "SoundBox.csproj", "{422D1181-4F25-4A4F-B9ED-980AAEFE2042}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567890} = {A1B2C3D4-E5F6-7890-ABCD-EF1234567890}
+	EndProjectSection
+EndProject
+
+# C++ DSP DLL (SIMD audio processing + FFTW3 auto-tune)
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SoundBoxDSP", "DSP\SoundBoxDSP.vcxproj", "{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}"
+EndProject
+
+# C++ Kernel Driver (virtual audio device - requires WDK, not built by default)
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SoundBoxVAD", "Driver\SoundBoxVAD.vcxproj", "{B2C3D4E5-F6A7-8901-BCDE-F12345678901}"
+EndProject
+
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		# SoundBox (C# App) - builds on Any CPU and x64
+		{422D1181-4F25-4A4F-B9ED-980AAEFE2042}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{422D1181-4F25-4A4F-B9ED-980AAEFE2042}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{422D1181-4F25-4A4F-B9ED-980AAEFE2042}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{422D1181-4F25-4A4F-B9ED-980AAEFE2042}.Debug|x64.Build.0 = Debug|Any CPU
+		{422D1181-4F25-4A4F-B9ED-980AAEFE2042}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{422D1181-4F25-4A4F-B9ED-980AAEFE2042}.Release|Any CPU.Build.0 = Release|Any CPU
+		{422D1181-4F25-4A4F-B9ED-980AAEFE2042}.Release|x64.ActiveCfg = Release|Any CPU
+		{422D1181-4F25-4A4F-B9ED-980AAEFE2042}.Release|x64.Build.0 = Release|Any CPU
+
+		# SoundBoxDSP (C++ DLL) - x64 only
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}.Debug|Any CPU.Build.0 = Debug|x64
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}.Debug|x64.ActiveCfg = Debug|x64
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}.Debug|x64.Build.0 = Debug|x64
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}.Release|Any CPU.ActiveCfg = Release|x64
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}.Release|Any CPU.Build.0 = Release|x64
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}.Release|x64.ActiveCfg = Release|x64
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}.Release|x64.Build.0 = Release|x64
+
+		# SoundBoxVAD (Driver) - NOT built by default (requires WDK)
+		{B2C3D4E5-F6A7-8901-BCDE-F12345678901}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{B2C3D4E5-F6A7-8901-BCDE-F12345678901}.Debug|x64.ActiveCfg = Debug|x64
+		{B2C3D4E5-F6A7-8901-BCDE-F12345678901}.Release|Any CPU.ActiveCfg = Release|x64
+		{B2C3D4E5-F6A7-8901-BCDE-F12345678901}.Release|x64.ActiveCfg = Release|x64
+	EndGlobalSection
+
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {49F39275-588C-4B8D-BC86-FA4170A26D5B}
+	EndGlobalSection
+EndGlobal
