@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write          # Required for SignPath.io
 
 jobs:
   release:
@@ -17,7 +18,11 @@ jobs:
       - name: Extract version from tag
         id: version
         shell: bash
-        run: echo "VERSION=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+        run: |
+          VERSION="${GITHUB_REF_NAME}"
+          VERSION_NUM="${VERSION#v}"
+          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
+          echo "VERSION_NUM=${VERSION_NUM}" >> $GITHUB_OUTPUT
 
       - name: Update Version.cs
         shell: pwsh
@@ -60,9 +65,39 @@ jobs:
         shell: pwsh
         run: Compress-Archive -Path publish\* -DestinationPath "SoundBox-${{ steps.version.outputs.VERSION }}-win-x64.zip"
 
+      # --- Inno Setup Installer ---
+      - name: Build installer with Inno Setup
+        shell: pwsh
+        run: |
+          # Inno Setup is pre-installed on windows-latest at this path
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" `
+            /DAppVersion="${{ steps.version.outputs.VERSION_NUM }}" `
+            installer\soundbox.iss
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           name: "SoundBox ${{ steps.version.outputs.VERSION }}"
           generate_release_notes: true
-          files: "SoundBox-${{ steps.version.outputs.VERSION }}-win-x64.zip"
+          files: |
+            SoundBox-${{ steps.version.outputs.VERSION }}-win-x64.zip
+            installer-output/SoundBox-${{ steps.version.outputs.VERSION_NUM }}-setup.exe
+
+      # --- SignPath.io Code Signing (uncomment after setup) ---
+      # To enable:
+      #   1. Sign up at https://signpath.io (free for OSS)
+      #   2. Create organization & project
+      #   3. Add GitHub Actions trusted build system
+      #   4. Set repository secrets: SIGNPATH_ORGANIZATION_ID, SIGNPATH_PROJECT_SLUG,
+      #      SIGNPATH_SIGNING_POLICY_SLUG, SIGNPATH_API_TOKEN
+      #
+      # - name: Sign installer with SignPath
+      #   uses: signpath/github-action-submit-signing-request@v1
+      #   with:
+      #     api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+      #     organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
+      #     project-slug: ${{ secrets.SIGNPATH_PROJECT_SLUG }}
+      #     signing-policy-slug: ${{ secrets.SIGNPATH_SIGNING_POLICY_SLUG }}
+      #     artifact-configuration-slug: "installer"
+      #     github-artifact-id: ${{ steps.upload.outputs.artifact-id }}
+      #     wait-for-completion: true
