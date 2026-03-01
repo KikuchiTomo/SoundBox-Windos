@@ -1,0 +1,68 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract version from tag
+        id: version
+        shell: bash
+        run: echo "VERSION=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+
+      - name: Update Version.cs
+        shell: pwsh
+        run: |
+          $content = Get-Content Version.cs -Raw
+          $content = $content -replace 'public const string Current = ".*?"', "public const string Current = `"${{ steps.version.outputs.VERSION }}`""
+          Set-Content Version.cs $content
+
+      - name: Setup .NET 6
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "6.0.x"
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Restore NuGet packages
+        run: dotnet restore SoundBox.csproj
+
+      - name: Build C++ DSP (Release|x64)
+        run: msbuild DSP\SoundBoxDSP.vcxproj /p:Configuration=Release /p:Platform=x64
+
+      - name: Publish C# App (Release)
+        run: dotnet publish SoundBox.csproj -c Release -r win-x64 --self-contained -o publish
+
+      - name: Copy native DLLs to publish
+        shell: pwsh
+        run: |
+          # DSP DLL
+          $dspPaths = @("DSP\x64\Release\SoundBoxDSP.dll", "x64\Release\SoundBoxDSP.dll")
+          foreach ($p in $dspPaths) {
+            if (Test-Path $p) { Copy-Item $p publish\; break }
+          }
+          # FFTW3 DLL
+          if (Test-Path "DSP\lib\fftw3\libfftw3f-3.dll") {
+            Copy-Item "DSP\lib\fftw3\libfftw3f-3.dll" publish\
+          }
+
+      - name: Create zip archive
+        shell: pwsh
+        run: Compress-Archive -Path publish\* -DestinationPath "SoundBox-${{ steps.version.outputs.VERSION }}-win-x64.zip"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "SoundBox ${{ steps.version.outputs.VERSION }}"
+          generate_release_notes: true
+          files: "SoundBox-${{ steps.version.outputs.VERSION }}-win-x64.zip"

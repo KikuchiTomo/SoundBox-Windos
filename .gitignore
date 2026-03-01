@@ -28,6 +28,10 @@ Release/
 *.opendb
 *.VC.db
 
+## FFTW3 library (required for build)
+!DSP/lib/fftw3/libfftw3f-3.dll
+!DSP/lib/fftw3/libfftw3f-3.lib
+
 ## NuGet
 packages/
 
