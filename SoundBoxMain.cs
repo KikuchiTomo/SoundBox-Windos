@@ -4,7 +4,7 @@ using SoundBox.UI;
 
 namespace SoundBox
 {
-    public partial class Form1 : Form
+    public partial class SoundBoxMain : Form
     {
         private readonly AudioEngine _engine = new();
         private readonly List<AudioGraph> _graphs = new();
@@ -30,7 +30,7 @@ namespace SoundBox
         private const int TitleBarH = 38;
         private const int ToolBarH = 40;
 
-        public Form1()
+        public SoundBoxMain()
         {
             InitializeComponent();
             BuildUI();
